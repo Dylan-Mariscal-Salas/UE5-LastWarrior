@@ -10,6 +10,9 @@ AEnemy::AEnemy()
 	PrimaryActorTick.bCanEverTick = true;
 	PlayerDetectorSphere = CreateDefaultSubobject<USphereComponent>(TEXT("PlayerDetectorSphere"));
 	PlayerDetectorSphere->SetupAttachment(RootComponent);
+	
+	HPText = CreateDefaultSubobject<UTextRenderComponent>(TEXT("HPText"));
+	HPText->SetupAttachment(RootComponent);
 }
 
 void AEnemy::BeginPlay()
@@ -18,6 +21,8 @@ void AEnemy::BeginPlay()
 	
 	PlayerDetectorSphere->OnComponentBeginOverlap.AddDynamic(this,&AEnemy::DetectorOverlapBegin);
 	PlayerDetectorSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemy::DetectorOverlapEnd);
+	
+	UpdateHP(HitPoints);
 }
 
 void AEnemy::Tick(float DeltaTime)
@@ -97,6 +102,12 @@ bool AEnemy::ShouldMoveToTarget()
 		float DistanceToTarget = abs(FollowTarget->GetActorLocation().X - GetActorLocation().X);
 		Result = DistanceToTarget > StopDistanceToTarget;
 	}
-	
 	return Result;
+}
+
+void AEnemy::UpdateHP(int NewHP)
+{
+	HitPoints = NewHP;
+	FString Str = FString::Printf(TEXT("HP: %d"),HitPoints);
+	HPText->SetText(FText::FromString(Str));
 }

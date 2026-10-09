@@ -6,7 +6,11 @@
 #include "PaperZDCharacter.h"
 #include "Components/SphereComponent.h"
 #include "PlayerCharacter.h"
+#include "Components/TextRenderComponent.h"
+
+
 #include "Enemy.generated.h"
+
 
 /**
  * 
@@ -32,8 +36,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool CanMove = true;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UTextRenderComponent* HPText;
 	
-	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int HitPoints = 100;
 	
 	AEnemy();
 	virtual void BeginPlay() override;
@@ -50,4 +57,7 @@ public:
 	UFUNCTION()
 	void DetectorOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	
+	void UpdateHP(int NewHP);
+	
 };
