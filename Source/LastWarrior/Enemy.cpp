@@ -111,3 +111,29 @@ void AEnemy::UpdateHP(int NewHP)
 	FString Str = FString::Printf(TEXT("HP: %d"),HitPoints);
 	HPText->SetText(FText::FromString(Str));
 }
+
+void AEnemy::TakeDamage(int DamageAmount, float StunDuration)
+{
+	if (!IsAlive) return;
+	
+	UpdateHP(HitPoints - DamageAmount);
+	
+	if (HitPoints <= 0.0f)
+	{
+		UpdateHP(0);
+		HPText->SetHiddenInGame(true);
+		
+		IsAlive = false;
+		CanMove = false;
+		
+		// play die animation
+		GetAnimInstance()->JumpToNode(FName("JumpDie"),FName("SkeletonStateMachine"));
+		
+	}
+	else
+	{
+		// enemy is alive
+		// play take hit animation
+		GetAnimInstance()->JumpToNode(FName("JumpTakeHit"),FName("SkeletonStateMachine"));
+	}
+}

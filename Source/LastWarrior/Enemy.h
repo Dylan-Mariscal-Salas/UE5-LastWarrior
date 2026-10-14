@@ -7,6 +7,7 @@
 #include "Components/SphereComponent.h"
 #include "PlayerCharacter.h"
 #include "Components/TextRenderComponent.h"
+#include "PaperZDAnimInstance.h"
 
 
 #include "Enemy.generated.h"
@@ -59,5 +60,7 @@ public:
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	
 	void UpdateHP(int NewHP);
+	
+	void TakeDamage(int DamageAmount, float StunDuration);
 	
 };

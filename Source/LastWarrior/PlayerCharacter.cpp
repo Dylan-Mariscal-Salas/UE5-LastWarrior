@@ -135,8 +135,8 @@ void APlayerCharacter::AttackBoxOverlapBegin(UPrimitiveComponent* OverlappedComp
 	AEnemy* Enemy = Cast<AEnemy>(OtherActor);
 	if (Enemy)
 	{
-		//Enemy->TakeDamage();
-		GEngine->AddOnScreenDebugMessage(-1,10.0f,FColor::White, Enemy->GetName());
+		Enemy->TakeDamage(AttackDamage, AttackStunDuration);
+		
 	}
 }
 
