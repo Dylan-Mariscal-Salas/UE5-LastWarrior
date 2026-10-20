@@ -116,7 +116,7 @@ void APlayerCharacter::Attack(const FInputActionValue& Value)
 	{
 		CanMove = false;
 		CanAttack = false;
-		//EnableAttackCollisionBox(true);
+		
 		GetAnimInstance()->PlayAnimationOverride(AttackAnimationSequence,
 			FName("DefaultSlot"),1.0f,0.0f,OnAttackOverrideEndDelegate);
 	}
@@ -126,7 +126,7 @@ void APlayerCharacter::OnAttackOverrideAnimEnd (bool Completed)
 {
 	CanMove = true;
 	CanAttack = true;
-	//EnableAttackCollisionBox(false);
+	
 }
 
 void APlayerCharacter::AttackBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 

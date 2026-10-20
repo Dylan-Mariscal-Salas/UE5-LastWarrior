@@ -8,6 +8,8 @@
 #include "PlayerCharacter.h"
 #include "Components/TextRenderComponent.h"
 #include "PaperZDAnimInstance.h"
+#include "Engine/TimerHandle.h"
+#include "Components/BoxComponent.h"
 
 
 #include "Enemy.generated.h"
@@ -29,19 +31,39 @@ public:
 	APlayerCharacter* FollowTarget;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float StopDistanceToTarget = 80.0f;
+	UBoxComponent* AttackCollisionBox;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float StopDistanceToTarget = 100.0f;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool IsAlive = true;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool IsStunned = false;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool CanMove = true;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPaperZDAnimSequence* AttackAnimationSequence;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UTextRenderComponent* HPText;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int HitPoints = 100;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool CanAttack = true;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int AttackCooldownInSeconds = 1.5f;
+	
+	FZDOnAnimationOverrideEndSignature OnAttackOverrideDelegate;
+	
+	FTimerHandle StunTimer;
+	FTimerHandle AttackCooldownTimer;
 	
 	AEnemy();
 	virtual void BeginPlay() override;
@@ -62,5 +84,19 @@ public:
 	void UpdateHP(int NewHP);
 	
 	void TakeDamage(int DamageAmount, float StunDuration);
+	
+	void Attack();
+	void OnAttackCooldownTimerTimeout();
+	void OnAttackOverrideAnimEnd(bool Completed);
+	
+	void Stun(float DurationInSeconds);
+	void OnStunTimerTimeout();
+	
+	UFUNCTION()
+	void AttackBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
+	UFUNCTION(BlueprintCallable)
+	void EnableAttackCollisionBox(bool Enabled);
 	
 };
