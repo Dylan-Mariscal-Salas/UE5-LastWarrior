@@ -4,6 +4,7 @@
 #include "PlayerCharacter.h"
 
 #include "Enemy.h"
+#include "Evaluation/IMovieSceneEvaluationHook.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -69,7 +70,7 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 {
 	float MoveActionValue = Value.Get<float>();
 	
-	if (IsAlive && CanMove)
+	if (IsAlive && CanMove && !IsStunned)
 	{
 		FVector Direction = FVector(1.0f,0.0f,0.0f);
 		AddMovementInput(Direction,MoveActionValue);
@@ -99,7 +100,7 @@ void APlayerCharacter::UpdateDirection(float MoveDirection)
 
 void APlayerCharacter::JumpStarted(const FInputActionValue& Value)
 {
-	if (IsAlive & CanMove)
+	if (IsAlive && CanMove && !IsStunned)
 	{
 		Jump();
 	}
@@ -112,7 +113,7 @@ void APlayerCharacter::JumpEnded(const FInputActionValue& Value)
 
 void APlayerCharacter::Attack(const FInputActionValue& Value)
 {
-	if (IsAlive && CanAttack)
+	if (IsAlive && CanAttack && !IsStunned)
 	{
 		CanMove = false;
 		CanAttack = false;
@@ -154,4 +155,60 @@ void APlayerCharacter::EnableAttackCollisionBox(bool Enabled)
 		AttackCollisionBox -> SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn,
 			ECR_Ignore);
 	}
+}
+
+void APlayerCharacter::TakeDamage(int DamageAmount, float StunDuration)
+{
+	if (!IsAlive) return ;
+	Stun(StunDuration);
+	
+	UpdateHp(HitPoints - DamageAmount);
+	
+	if (HitPoints <= 0)
+	{
+		UpdateHp(0);
+		
+		CanAttack = false;
+		CanMove = false;
+		IsAlive = false;
+		
+		GetAnimInstance()->JumpToNode(FName("JumpDie"), FName("SamuraiStateMachine"));
+		EnableAttackCollisionBox(false);
+	}
+	else
+	{
+		GetAnimInstance()->JumpToNode(FName("JumpTakeHit"),FName("SamuraiStateMachine"));
+	}
+}
+
+
+void APlayerCharacter::UpdateHp(int NewHP)
+{
+	HitPoints = NewHP;
+}
+
+
+void APlayerCharacter::Stun(float DurationInSeconds)
+{
+	IsStunned = true;
+	
+	bool IsTimerActive = GetWorldTimerManager().IsTimerActive(StunTimer);
+	
+	if (IsTimerActive)
+	{
+		GetWorldTimerManager().ClearTimer(StunTimer);
+	}
+
+	
+	GetWorldTimerManager().SetTimer(StunTimer, this, &APlayerCharacter::OnStunTimerTimout, 1.0f,
+		false, DurationInSeconds);
+	
+	GetAnimInstance()->StopAllAnimationOverrides();
+	
+	EnableAttackCollisionBox(false);
+	
+}
+void APlayerCharacter::OnStunTimerTimout()
+{
+	IsStunned = false;
 }

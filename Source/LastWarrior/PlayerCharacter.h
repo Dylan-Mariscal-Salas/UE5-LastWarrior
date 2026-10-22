@@ -14,6 +14,7 @@
 #include "InputActionValue.h"
 #include "PaperZDAnimInstance.h"
 #include "Components/BoxComponent.h"
+#include "Engine/TimerHandle.h"
 
 #include "PlayerCharacter.generated.h"
 
@@ -61,11 +62,19 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool CanAttack = true;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool IsStunned = false;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int HitPoints = 100;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int AttackDamage = 25;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AttackStunDuration = 0.3f;
+	
+	FTimerHandle StunTimer;
 	
 	FZDOnAnimationOverrideEndSignature OnAttackOverrideEndDelegate;
 	
@@ -89,4 +98,10 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void EnableAttackCollisionBox(bool Enabled);
+
+	void TakeDamage(int DamageAmount, float StunDuration);
+	void UpdateHp(int NewHP);
+	
+	void Stun(float DurationInSeconds);
+	void OnStunTimerTimout();
 };
