@@ -159,26 +159,26 @@ void APlayerCharacter::EnableAttackCollisionBox(bool Enabled)
 
 void APlayerCharacter::TakeDamage(int DamageAmount, float StunDuration)
 {
-	if (!IsAlive) return ;
-	Stun(StunDuration);
-	
+	if (!IsAlive) return;
 	UpdateHp(HitPoints - DamageAmount);
+	Stun(StunDuration);
 	
 	if (HitPoints <= 0)
 	{
 		UpdateHp(0);
-		
-		CanAttack = false;
 		CanMove = false;
+		CanAttack = false;
 		IsAlive = false;
 		
 		GetAnimInstance()->JumpToNode(FName("JumpDie"), FName("SamuraiStateMachine"));
+		
 		EnableAttackCollisionBox(false);
 	}
 	else
 	{
-		GetAnimInstance()->JumpToNode(FName("JumpTakeHit"),FName("SamuraiStateMachine"));
+		GetAnimInstance()->JumpToNode(FName("JumpTakeHit"), FName("SamuraiStateMachine"));
 	}
+	
 }
 
 
@@ -191,24 +191,22 @@ void APlayerCharacter::UpdateHp(int NewHP)
 void APlayerCharacter::Stun(float DurationInSeconds)
 {
 	IsStunned = true;
+	bool IsTimerAlreadyActive = GetWorldTimerManager().IsTimerActive(StunTimer);
 	
-	bool IsTimerActive = GetWorldTimerManager().IsTimerActive(StunTimer);
-	
-	if (IsTimerActive)
+	if (IsTimerAlreadyActive)
 	{
 		GetWorldTimerManager().ClearTimer(StunTimer);
 	}
-
 	
-	GetWorldTimerManager().SetTimer(StunTimer, this, &APlayerCharacter::OnStunTimerTimout, 1.0f,
-		false, DurationInSeconds);
+	GetWorldTimerManager().SetTimer(StunTimer,this,&APlayerCharacter::OnStunTimerTimeout,1.0f,false,
+		DurationInSeconds);
 	
 	GetAnimInstance()->StopAllAnimationOverrides();
 	
 	EnableAttackCollisionBox(false);
 	
 }
-void APlayerCharacter::OnStunTimerTimout()
+void APlayerCharacter::OnStunTimerTimeout()
 {
 	IsStunned = false;
 }

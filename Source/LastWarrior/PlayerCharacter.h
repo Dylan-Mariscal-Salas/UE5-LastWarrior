@@ -103,5 +103,5 @@ public:
 	void UpdateHp(int NewHP);
 	
 	void Stun(float DurationInSeconds);
-	void OnStunTimerTimout();
+	void OnStunTimerTimeout();
 };
