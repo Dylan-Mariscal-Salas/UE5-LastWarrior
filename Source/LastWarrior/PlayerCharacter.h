@@ -13,6 +13,7 @@
 #include "GameFramework/Controller.h"
 #include "InputActionValue.h"
 #include "PaperZDAnimInstance.h"
+#include "PlayerHUD.h"
 #include "Components/BoxComponent.h"
 #include "Engine/TimerHandle.h"
 
@@ -74,7 +75,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AttackStunDuration = 0.3f;
 	
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UPlayerHUD> PlayerHUDClass;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPlayerHUD* PlayerHUDWidget;
+	
 	FTimerHandle StunTimer;
+	
 	
 	FZDOnAnimationOverrideEndSignature OnAttackOverrideEndDelegate;
 	

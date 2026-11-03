@@ -2,6 +2,7 @@
 
 
 #include "PlayerCharacter.h"
+#include "Kismet/GameplayStatics.h"
 
 #include "Enemy.h"
 #include "Evaluation/IMovieSceneEvaluationHook.h"
@@ -43,6 +44,20 @@ void APlayerCharacter::BeginPlay()
 	OnAttackOverrideEndDelegate.BindUObject(this, &APlayerCharacter::OnAttackOverrideAnimEnd);
 	AttackCollisionBox->OnComponentBeginOverlap.AddDynamic(this,&APlayerCharacter::AttackBoxOverlapBegin);
 	EnableAttackCollisionBox(false);
+	
+	if (PlayerHUDClass)
+	{
+		PlayerHUDWidget = CreateWidget<UPlayerHUD>(UGameplayStatics::GetPlayerController(GetWorld(),0
+			), PlayerHUDClass);
+		
+		if (PlayerHUDWidget)
+		{
+			PlayerHUDWidget->AddToPlayerScreen();
+			PlayerHUDWidget->SetHP(HitPoints);
+			PlayerHUDWidget->SetDiamonds(59);
+			PlayerHUDWidget->SetLevel(1);
+		}
+	}
 }
 void APlayerCharacter::Tick(float DeltaTime)
 {
@@ -185,6 +200,7 @@ void APlayerCharacter::TakeDamage(int DamageAmount, float StunDuration)
 void APlayerCharacter::UpdateHp(int NewHP)
 {
 	HitPoints = NewHP;
+	PlayerHUDWidget->SetHP(HitPoints);
 }
 
 
