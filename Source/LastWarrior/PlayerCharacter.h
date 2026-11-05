@@ -16,6 +16,9 @@
 #include "PlayerHUD.h"
 #include "Components/BoxComponent.h"
 #include "Engine/TimerHandle.h"
+#include "LastWarrior_GameInstance.h"
+#include "CollectibleItem.h"
+#include "Sound/SoundBase.h"
 
 #include "PlayerCharacter.generated.h"
 
@@ -81,7 +84,15 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UPlayerHUD* PlayerHUDWidget;
 	
+	
+	
 	FTimerHandle StunTimer;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	ULastWarrior_GameInstance* MyGameInstance;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundBase* ItemPickupSound;
 	
 	
 	FZDOnAnimationOverrideEndSignature OnAttackOverrideEndDelegate;
@@ -112,4 +123,6 @@ public:
 	
 	void Stun(float DurationInSeconds);
 	void OnStunTimerTimeout();
+	
+	void CollectItem(CollectableType ItemType);
 };

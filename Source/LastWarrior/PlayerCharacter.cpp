@@ -45,6 +45,12 @@ void APlayerCharacter::BeginPlay()
 	AttackCollisionBox->OnComponentBeginOverlap.AddDynamic(this,&APlayerCharacter::AttackBoxOverlapBegin);
 	EnableAttackCollisionBox(false);
 	
+	MyGameInstance = Cast<ULastWarrior_GameInstance>(GetGameInstance());
+	if (MyGameInstance)
+	{
+		HitPoints = MyGameInstance ->PlayerHP;
+	}
+	
 	if (PlayerHUDClass)
 	{
 		PlayerHUDWidget = CreateWidget<UPlayerHUD>(UGameplayStatics::GetPlayerController(GetWorld(),0
@@ -200,6 +206,7 @@ void APlayerCharacter::TakeDamage(int DamageAmount, float StunDuration)
 void APlayerCharacter::UpdateHp(int NewHP)
 {
 	HitPoints = NewHP;
+	MyGameInstance->SetPlayerHP(HitPoints);
 	PlayerHUDWidget->SetHP(HitPoints);
 }
 
@@ -225,4 +232,32 @@ void APlayerCharacter::Stun(float DurationInSeconds)
 void APlayerCharacter::OnStunTimerTimeout()
 {
 	IsStunned = false;
+}
+
+void APlayerCharacter::CollectItem(CollectableType ItemType)
+{
+	UGameplayStatics::PlaySound2D(GetWorld(),ItemPickupSound);
+
+	switch (ItemType)
+	{
+		case CollectableType::Diamond:
+			{
+			
+			}break;
+		
+		case CollectableType::HealthPotion:
+			{
+				
+			}break;
+		
+		case CollectableType::DoubleJumpUpgrade:
+			{
+			
+			}break;
+		
+		default:
+		{}break;
+		
+	}
+
 }

@@ -10,7 +10,8 @@
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
 				"PaperZD",
-				"UMG"
+				"UMG",
+				"Engine"
 			]
 		}
 	],
