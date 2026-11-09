@@ -65,7 +65,7 @@ void APlayerCharacter::BeginPlay()
 			PlayerHUDWidget->AddToPlayerScreen();
 			PlayerHUDWidget->SetHP(HitPoints);
 			PlayerHUDWidget->SetDiamonds(MyGameInstance->DiamondCollectedCount);
-			PlayerHUDWidget->SetLevel(1);
+			PlayerHUDWidget->SetLevel(MyGameInstance->CurrentLevelIndex);
 		}
 	}
 }
@@ -198,6 +198,9 @@ void APlayerCharacter::TakeDamage(int DamageAmount, float StunDuration)
 		GetAnimInstance()->JumpToNode(FName("JumpDie"), FName("SamuraiStateMachine"));
 		
 		EnableAttackCollisionBox(false);
+		
+		GetWorldTimerManager().SetTimer(RestartTimer, this, &APlayerCharacter::OntRestartTimerTimeout, 1.0f,0
+			,RestartTimeDuration);
 	}
 	else
 	{
@@ -283,4 +286,9 @@ void APlayerCharacter::CollectItem(CollectableType ItemType)
 void APlayerCharacter::UnlockDoubleJump()
 {
 	JumpMaxCount = 2;
+}
+
+void APlayerCharacter::OntRestartTimerTimeout()
+{
+	MyGameInstance->RestartGame();
 }

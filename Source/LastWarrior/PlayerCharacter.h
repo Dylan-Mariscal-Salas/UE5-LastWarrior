@@ -78,6 +78,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AttackStunDuration = 0.3f;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float RestartTimeDuration = 3.0f;
+	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UPlayerHUD> PlayerHUDClass;
 	
@@ -87,12 +90,15 @@ public:
 	
 	
 	FTimerHandle StunTimer;
+	FTimerHandle RestartTimer;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	ULastWarrior_GameInstance* MyGameInstance;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USoundBase* ItemPickupSound;
+	
+	
 	
 	
 	FZDOnAnimationOverrideEndSignature OnAttackOverrideEndDelegate;
@@ -127,4 +133,6 @@ public:
 	void CollectItem(CollectableType ItemType);
 	
 	void UnlockDoubleJump();
+	
+	void OntRestartTimerTimeout();
 };
