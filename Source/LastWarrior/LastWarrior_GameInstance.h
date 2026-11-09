@@ -20,5 +20,11 @@ public:
 	
 	void SetPlayerHP(int HP);
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int DiamondCollectedCount = 0;
 	
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite)
+	bool IsDoubleJumpUnlocked = false;
+	
+	void AddDiamond(int Amount);
 };

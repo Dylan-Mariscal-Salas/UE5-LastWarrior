@@ -7,3 +7,8 @@ void ULastWarrior_GameInstance::SetPlayerHP(int HP)
 {
 	PlayerHP = HP;
 }
+
+void ULastWarrior_GameInstance::AddDiamond(int Amount)
+{
+	DiamondCollectedCount += Amount;
+}
