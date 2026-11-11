@@ -3,6 +3,7 @@
 
 #include "PlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 #include "Enemy.h"
 #include "Evaluation/IMovieSceneEvaluationHook.h"
@@ -150,8 +151,11 @@ void APlayerCharacter::Attack(const FInputActionValue& Value)
 
 void APlayerCharacter::OnAttackOverrideAnimEnd (bool Completed)
 {
-	CanMove = true;
-	CanAttack = true;
+	if (IsActive && IsAlive)
+	{
+		CanMove = true;
+		CanAttack = true;
+	}
 	
 }
 
@@ -185,6 +189,7 @@ void APlayerCharacter::EnableAttackCollisionBox(bool Enabled)
 void APlayerCharacter::TakeDamage(int DamageAmount, float StunDuration)
 {
 	if (!IsAlive) return;
+	if (!IsActive) return;
 	UpdateHp(HitPoints - DamageAmount);
 	Stun(StunDuration);
 	
@@ -291,4 +296,16 @@ void APlayerCharacter::UnlockDoubleJump()
 void APlayerCharacter::OntRestartTimerTimeout()
 {
 	MyGameInstance->RestartGame();
+}
+
+void APlayerCharacter::Deactivate()
+{
+	if (IsActive)
+	{
+		CanAttack = false;
+		CanMove = false;
+		IsActive = false;
+		
+		GetCharacterMovement()->StopMovementImmediately();
+	}
 }
